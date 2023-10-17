@@ -16,8 +16,8 @@ static int _can_stream(vcam_t *vcam) {
 	return vcam->stream_status == ON && vcam->_out != NULL;
 }
 
-// _run start the streaming thread
-static void _run(void *input) {
+// run start the streaming thread
+static void* _run(void *input) {
 	vcam_t *vcam = (vcam_t*)input;
 	
 	// wait for the stream_status to be 
@@ -31,7 +31,7 @@ static void _run(void *input) {
 	}
 	pthread_mutex_unlock(&vcam->_mux);
 
-	int rc;
+	int rc = 0;
 	log_info("Streaming started.");
 	while (_can_stream(vcam)) {
 		rc = vcam_impl_capture_frames(vcam->impl);
@@ -43,21 +43,26 @@ static void _run(void *input) {
 		for (int i = 0; i < vcam->impl->n_frames; i++) {
 			frame_buffer *fbuf = &vcam->impl->frames[i];
 			rc = fwrite(fbuf, fbuf->byteused, 1, vcam->_out);
-			if (rc = -1) log_err("Failed to write frame to stream.");
+			if (rc == -1) {
+				log_err("Failed to write frame to stream.");
+			}
 		}
 
 		rc = fflush(vcam->_out);
-		if (rc == -1) log_err("Failed to flush frame to stream.");
+		if (rc == -1) {
+			log_err("Failed to flush frame to stream.");
+		}
 	}
 
 	log_info("Streaming stopped.");
+	return NULL;
 } 
 
 int vcam_init_stream(vcam_t *vcam, struct v4l2_format *fmt) {
 	if (!vcam) return 0;
 
 	pthread_mutex_lock(&vcam->_mux);
-	int ok;
+	int ok = 0;
 	int valid_status = vcam->stream_status == OFF;
 	if (valid_status) {
 		log_info("Initiating streaming.");
@@ -76,7 +81,7 @@ int vcam_init_stream(vcam_t *vcam, struct v4l2_format *fmt) {
 int vcam_start_stream(vcam_t *vcam, FILE *out) {
 	if (!vcam) return 0;
 
-	int ok;
+	int ok = 0;
 	pthread_mutex_lock(&vcam->_mux);
 	if (vcam->stream_status == OFF) {
 		log_info("Starts streaming.");

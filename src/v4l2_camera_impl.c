@@ -9,14 +9,13 @@
 #include "debug.h"
 #include "v4l2_camera_impl.h"
 
-// An extended version of ioctl system function
-#define xioctl(fd, request, data, ...)  {\
+#define xioctl(fd, request, data, ...)  { \
 	int ok; \
 	do {	\
 		ok = ioctl(fd, request, data); \
 	} while (ok < 0 && (errno == EINTR || errno == EAGAIN)); \
 	check(ok >= 0, ##__VA_ARGS__); \
-} \
+}
 
 static void _init_v4l2_buffer(struct v4l2_buffer *buf, int index) {
 	if (!buf) {
@@ -149,7 +148,7 @@ int vcam_impl_start_stream(vcam_impl_t *cam) {
 	return _stream_execute(cam, VIDIOC_STREAMON);
 }
 
-int vcam_impl_stop_stream(vcam_impl_t *cam) {
+void vcam_impl_stop_stream(vcam_impl_t *cam) {
 	_stream_execute(cam, VIDIOC_STREAMOFF);
 	_deallocate_buffers(cam);
 	_close_device(cam->descriptor);

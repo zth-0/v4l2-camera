@@ -35,7 +35,7 @@ int vcam_impl_init_stream(vcam_impl_t *cam, struct v4l2_format *format);
 
 int vcam_impl_start_stream(vcam_impl_t *cam);
 
-int vcam_impl_stop_stream(vcam_impl_t *cam);
+void vcam_impl_stop_stream(vcam_impl_t *cam);
 
 // vcam_impl_capture_frames load the captured frames into the frames// of the v4l2_camera_impl. 
 // This function needs to be called // every time before copying frame data from frames.
