@@ -67,7 +67,6 @@ int vcam_impl_init(vcam_impl_t *vcam, const int *frame_num) {
 void vcam_impl_destroy(vcam_impl_t  *cam) {
 	if (!cam) return;
 
-    if (cam->path) free(cam->path);
 	_deallocate_buffers(cam);
 	_close_device(cam->descriptor);
 }
