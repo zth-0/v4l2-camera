@@ -1,8 +1,9 @@
 CC=gcc
 LD=gcc
 
-OPTLIBS=-lv4l2
-CFLAGS=-g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG $(OPTFLAGS)
+OPTLIBS=-lv4l2 -lpthread
+OPTFLAGS=-pthread
+CFLAGS=-g -O2 -Wall -Wextra -Isrc -rdynamic $(OPTFLAGS)
 LIBS=-ldl $(OPTLIBS)
 PREFIX?=/usr/local
 LIBNAME=v4l2cam

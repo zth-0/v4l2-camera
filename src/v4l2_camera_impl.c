@@ -91,9 +91,10 @@ int vcam_impl_init_stream(vcam_impl_t *cam, struct v4l2_format *format) {
 	struct v4l2_format *pfmt = format;
 
 	if (!pfmt) {
+		stream_fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 		stream_fmt.fmt.pix.width = DEFAULT_PIX_W;
 		stream_fmt.fmt.pix.height = DEFAULT_PIX_H;
-		stream_fmt.fmt.pix.pixelformat = DEFAULT_FRAME_COUNT;
+		stream_fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_JPEG;
 		pfmt = &stream_fmt;
 	}
 
@@ -106,17 +107,18 @@ int vcam_impl_init_stream(vcam_impl_t *cam, struct v4l2_format *format) {
 	req_buf.memory = V4L2_MEMORY_MMAP;
 	xioctl(cam->descriptor, VIDIOC_REQBUFS, &req_buf, "ioctl error: %s", "VIDIOC_REQBUFS");
 
-    debug("Query buffers");
+    debug("Query %d buffers", cam->n_frames);
 	for (int i = 0; i < cam->n_frames; i++) {
-		struct v4l2_buffer query_buf = {0};
+		struct v4l2_buffer query_buf;
 		_init_v4l2_buffer(&query_buf, i);
-		xioctl(cam->descriptor, VIDIOC_QUERYBUF, &query_buf, "ioctl error: %s", "VIDIOC_QUERYBUF");
+		xioctl(cam->descriptor, VIDIOC_QUERYBUF, &query_buf, "ioctl error: %s, Index: %d", "VIDIOC_QUERYBUF", i);
 
 		char *buf = (char*)mmap(NULL, query_buf.length,
 								PROT_READ | PROT_WRITE,
 								MAP_SHARED,
 								cam->descriptor, query_buf.m.offset);
 
+		debug("Called MMAP. Index: %d", i);
 		check(buf != MAP_FAILED, "mmap failed.");
 		cam->frames[i].data = buf;
 		cam->frames[i].length = query_buf.length;

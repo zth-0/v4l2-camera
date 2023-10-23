@@ -93,6 +93,7 @@ int vcam_start_stream(vcam_t *vcam, FILE *out) {
 			pthread_cond_signal(&vcam->_scv);
 		}
 	}
+	pthread_mutex_unlock(&vcam->_mux);
 	
 	return ok;
 }
