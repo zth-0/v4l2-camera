@@ -9,7 +9,7 @@ extern "C" {
 
 #define DEFAULT_PIX_W 		1024 // default width of a frame
 #define DEFAULT_PIX_H 		1024 // default height of a frame
-#define DEFAULT_FRAME_COUNT 128
+#define DEFAULT_FRAME_COUNT 16
 
 #define SUCCESS 1
 #define FAILURE 0

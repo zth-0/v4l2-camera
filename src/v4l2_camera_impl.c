@@ -161,8 +161,8 @@ int vcam_impl_capture_frames(vcam_impl_t *cam) {
 	for (int i = 0; i < cam->n_frames; i++) {
 		struct v4l2_buffer q_buf = {0};
 		_init_v4l2_buffer(&q_buf, i);
-		xioctl(cam->descriptor, VIDIOC_QBUF, &q_buf, "ioctl error: %s", "VIDIOC_QBUF");
-		xioctl(cam->descriptor, VIDIOC_DQBUF, &q_buf, "ioctl error: %s", "VIDIOC_DQBUF");
+		xioctl(cam->descriptor, VIDIOC_QBUF, &q_buf, "ioctl error: %s, index: %d", "VIDIOC_QBUF", i);
+		xioctl(cam->descriptor, VIDIOC_DQBUF, &q_buf, "ioctl error: %s, index: %d", "VIDIOC_DQBUF", i);
 		cam->frames[q_buf.index].byteused = q_buf.bytesused;
 	}
 	
