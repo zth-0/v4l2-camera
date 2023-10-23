@@ -68,7 +68,8 @@ int main(int argc, char *argv[]) {
 
     log_info("calling: vcam_init_stream.");
     vcam_init_stream(vcam, NULL);
-
+    log_info("sleeping for %d second(s)...", SLEEP_IN_SECOND);
+    
     log_info("calling: vcam_start_stream.");
     vcam_start_stream(vcam, vid_file);
 

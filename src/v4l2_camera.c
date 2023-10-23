@@ -116,8 +116,8 @@ void vcam_destroy(vcam_t *vcam) {
 	
 	int ret;
 	ret = pthread_cond_destroy(&vcam->_scv);
-	if (!ret) log_warn("Failed to destroy mutex");
+	if (ret != 0) log_warn("Failed to destroy mutex");
 
 	ret = pthread_mutex_destroy(&vcam->_mux);
-	if (!ret) log_warn("Failed to destroy conditional_variable");
+	if (ret != 0) log_warn("Failed to destroy conditional_variable");
 }
