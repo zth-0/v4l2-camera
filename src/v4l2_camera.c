@@ -6,6 +6,11 @@
 
 static void _stop_stream(vcam_t *vcam) {
 	pthread_mutex_lock(&vcam->_mux);
+	if (vcam->stream_status == OFF) {
+		pthread_mutex_unlock(&vcam->_mux);
+		return;
+	}
+
 	vcam->stream_status = OFF;
 	vcam->_out = NULL;
 	vcam_impl_stop_stream(vcam->impl);
